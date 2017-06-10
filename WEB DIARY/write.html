@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>THE DIARY : WRITING</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://cdn.ckeditor.com/4.7.0/standard/ckeditor.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="mycss.css">
+
+
+    <script src="https://www.gstatic.com/firebasejs/4.1.2/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyAgpael6QN7dr4TzP6xgc-6_HfYb3d3hHE",
+        authDomain: "web-diary-f528f.firebaseapp.com",
+        databaseURL: "https://web-diary-f528f.firebaseio.com",
+        projectId: "web-diary-f528f",
+        storageBucket: "web-diary-f528f.appspot.com",
+        messagingSenderId: "682821211114"
+      };
+      firebase.initializeApp(config);
+    </script>
+</head>
+<body>
+	<header data-role="header" data-theme="b">
+        <div class="title">
+            <a class="titleName" href="main.html" style="color:whitesmoke;text-decoration:none;">
+                <img src="image/notepad1.png" />THE DIARY</a>
+        </div>
+        <div class="btn-bar">
+        	<a id='btn1' href="main.html" class="ui-btn ui-icon-home ui-btn-icon-left">메인 페이지</a>
+			<a id='btn2' class="ui-btn ui-icon-edit ui-btn-icon-left">편집하기[X]</a>
+			<a id='btn3' class="ui-btn ui-icon-check ui-btn-icon-left">저장하기</a>
+        </div>
+    </header>
+    <form class="writeform">
+        <textarea id="usertitle" style="display:inline;width:50%;">제목을 입력하세요</textarea>
+        <textarea id="usertag" style="display:inline;width:20%;">태그</textarea>
+        <textarea name="editor1" id="editor1" ></textarea>
+        <script>
+            CKEDITOR.replace("editor1");
+
+            function writeUserData(title,text,tag) {
+                firebase.database().ref().child('DIARY').push({
+                    userTitle: title,
+                    userText: text,
+                    userTag: tag
+                });
+            }
+
+            
+
+            $(function(){
+                $('#usertitle').focusin(function() {
+                    $(this).val(''); 
+                });  
+                $('#usertag').focusin(function() {
+                    $(this).val(''); 
+                });       
+            });
+
+
+            $("#btn3").click(function(){
+                alert("저장 하시겠습니까?");
+                let text =CKEDITOR.instances.editor1.getData();
+                let title = $("#usertitle").val();
+                let tag = $("#usertag").val();
+
+                writeUserData(title, text, tag);
+            });
+
+
+
+
+        </script>
+    </form>
+</body>
+</html>

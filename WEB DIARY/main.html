@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>THE DIARY</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="mycss.css">
+
+    <script src="https://www.gstatic.com/firebasejs/4.1.2/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyAgpael6QN7dr4TzP6xgc-6_HfYb3d3hHE",
+        authDomain: "web-diary-f528f.firebaseapp.com",
+        databaseURL: "https://web-diary-f528f.firebaseio.com",
+        projectId: "web-diary-f528f",
+        storageBucket: "web-diary-f528f.appspot.com",
+        messagingSenderId: "682821211114"
+      };
+      firebase.initializeApp(config);
+    </script>
+</head>
+<body>                
+    <header data-role="header" data-theme="b">
+        <div class="title">
+            <a class="titleName" href="main.html" style="color:whitesmoke;text-decoration:none;">
+            <img src="image/notepad1.png" />THE DIARY</a>
+        </div>
+
+        <div class="btn-bar">
+            <a id='btn1' href="write.html" class="ui-btn ui-icon-edit ui-btn-icon-left">글작성</a>
+            <a id='btn2' class="ui-btn ui-icon-delete ui-btn-icon-left">글삭제[X]</a>
+            <a id='btn3' class="ui-btn ui-icon-tag ui-btn-icon-left">해시태그로 찾기[X]</a>
+        </div>
+    </header>
+    <content>
+        <script>
+
+            function loadNoteDB() {
+                $.ajax({
+                    url : config.databaseURL + "/DIARY.json",
+                    method: "GET",
+
+                    success: function (data)  {
+                        let arr = new Array();
+                        for(let l in data){
+                            arr.push(l);
+                        }
+                        for (let l=arr.length-1; l >=0; l--) {
+                           $("content").append("<hr/><p class='userTitle' style=';font-weight:bold;'>Title : "+data[arr[l]].userTitle+"&nbsp[#"+data[arr[l]].userTag+"]</p><hr/>");
+                           $("content").append("<p class='userText'>"+data[arr[l]].userText+"</p></br>");
+                        }
+                    }
+                });
+            }
+
+            $(document).ready(function(){
+                loadNoteDB();
+            });
+
+        </script>
+    </content>
+</body>
+</html>
