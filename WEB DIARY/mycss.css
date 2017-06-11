@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Ubuntu|Pacifico");
 
-
 * {
   font-family: '나눔고딕';
   font-family: 'Ubuntu', sans-serif;
@@ -26,7 +25,7 @@ header .btn-bar {
   vertical-align:middle;
 }
 
-#btn1, #btn2, #btn3 {
+#btn1, #btn2, #btn3, #btn4, #btn5, #btn6 {
   position: relative;
   box-sizing: border-box;
   width: 30%;
@@ -43,11 +42,23 @@ content p {
   text-align:center;
   vertical-align:middle;
 }
+
 hr {
   margin: 1px;
 }
 
-.userTitle {
-  background-color: rgb(187,187,190);
-}
+@media ( min-width: 481px ){
+  header {
+    width: 30%;
+    height: 1000px;
+    float: left;
+    margin-bottom: -1px;
+  }
 
+  #btn1, #btn2, #btn3, #btn4, #btn5, #btn6 {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    float: left;
+  }
+}

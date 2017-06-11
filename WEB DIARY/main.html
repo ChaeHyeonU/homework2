@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<title>THE DIARY</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>THE DIARY</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.ckeditor.com/4.7.0/standard/ckeditor.js"></script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
     <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -23,49 +23,119 @@
         projectId: "web-diary-f528f",
         storageBucket: "web-diary-f528f.appspot.com",
         messagingSenderId: "682821211114"
-      };
-      firebase.initializeApp(config);
+    };
+    firebase.initializeApp(config);
+
     </script>
 </head>
-<body>                
-    <header data-role="header" data-theme="b">
-        <div class="title">
-            <a class="titleName" href="main.html" style="color:whitesmoke;text-decoration:none;">
-            <img src="image/notepad1.png" />THE DIARY</a>
-        </div>
+<body> 
+    <section id="mainpage" data-role="page">
 
-        <div class="btn-bar">
-            <a id='btn1' href="write.html" class="ui-btn ui-icon-edit ui-btn-icon-left">글작성</a>
-            <a id='btn2' class="ui-btn ui-icon-delete ui-btn-icon-left">글삭제[X]</a>
-            <a id='btn3' class="ui-btn ui-icon-tag ui-btn-icon-left">해시태그로 찾기[X]</a>
-        </div>
-    </header>
-    <content>
-        <script>
+        <header class="ui-header" data-role="header" data-theme="b">
+            <div class="title">
+                <a class="titleName" href="#mainpage" style="color:whitesmoke;text-decoration:none;">
+                    <img src="image/notepad1.png" />THE DIARY</a>
+                </div>
 
-            function loadNoteDB() {
-                $.ajax({
-                    url : config.databaseURL + "/DIARY.json",
-                    method: "GET",
+                <div class="btn-bar">
+                <a id='btn1' href="#writepage" class="ui-btn ui-icon-edit ui-btn-icon-left">글작성</a>
+                    <a id='btn2' class="ui-btn ui-icon-delete ui-btn-icon-left">글삭제[X]</a>
+                    <a id='btn3' class="ui-btn ui-icon-tag ui-btn-icon-left">해시태그로 찾기[X]</a>
+                </div>
+            </header>
+            <content id="diary">
+                <script>
+                    
+                    function loadNoteDB() {
+                        $.ajax({
+                            url : config.databaseURL + "/DIARY.json",
+                            method: "GET",
 
-                    success: function (data)  {
-                        let arr = new Array();
-                        for(let l in data){
-                            arr.push(l);
-                        }
-                        for (let l=arr.length-1; l >=0; l--) {
-                           $("content").append("<hr/><p class='userTitle' style=';font-weight:bold;'>Title : "+data[arr[l]].userTitle+"&nbsp[#"+data[arr[l]].userTag+"]</p><hr/>");
-                           $("content").append("<p class='userText'>"+data[arr[l]].userText+"</p></br>");
-                        }
+                            success: function (data)  {
+                                let arr = new Array();
+
+                                for(let l in data){
+                                    arr.push(l);
+                                }
+                                for (let l=arr.length-1; l >=0; l--) {
+                                    $("#diary").append("<div class='u-text' id='area"+l+"'>");
+                                    $("#area"+l).append("<hr/><p id='title"+l+"'class='userTitle' style=';font-weight:bold;'>Title : "+data[arr[l]].userTitle+"&nbsp[#"+data[arr[l]].userTag+"]</p><hr/>");
+                                    $("#area"+l).append("<p id='text"+l+"'' class='userText'>"+data[arr[l]].userText+"</p></br>");
+                                    $("#area"+l).append("<a id='dbt' class='ui-btn ui-icon-delete ui-btn-icon-left'>삭제</a>");
+
+                               }
+                           }
+                       });
                     }
-                });
-            }
 
-            $(document).ready(function(){
-                loadNoteDB();
-            });
 
-        </script>
-    </content>
-</body>
-</html>
+                    $(document).ready(function(){
+                        loadNoteDB();
+                        /*
+                        $("#dbt").click(function(){
+                            $(this).parent().remove();
+                        });
+                        */
+                    });
+
+                </script>
+            </content>
+        </section>
+
+        <section id="writepage" data-role="page">
+            <header class="ui-header" data-role="header" data-theme="b">
+                <div class="title">
+                    <a class="titleName" href="#mainpage" style="color:whitesmoke;text-decoration:none;">
+                        <img src="image/notepad1.png" />THE DIARY</a>
+                    </div>
+                    <div class="btn-bar">
+                        <a id='btn4' href="#mainpage" class="ui-btn ui-icon-home ui-btn-icon-left">메인 페이지</a>
+                        <a id='btn5' class="ui-btn ui-icon-edit ui-btn-icon-left">편집하기[X]</a>
+                        <a id='btn6' class="ui-btn ui-icon-check ui-btn-icon-left">저장하기</a>
+                    </div>
+                </header>
+                <content>
+                    <form class="writeform">
+                        <textarea id="usertitle" style="display:inline;width:49%;">제목을 입력하세요</textarea>
+                        <textarea id="usertag" style="display:inline;width:20%;">태그</textarea>
+                        <textarea name="editor1" id="editor1" ></textarea>
+                        <script>
+                            CKEDITOR.replace("editor1");
+
+                            function writeUserData(title,text,tag) {
+                                firebase.database().ref().child('DIARY').push({
+                                    userTitle: title,
+                                    userText: text,
+                                    userTag: tag
+                                });
+                            }
+
+
+                            $(function(){
+                                $('#usertitle').focusin(function() {
+                                    $(this).val(''); 
+                                });  
+                                $('#usertag').focusin(function() {
+                                    $(this).val(''); 
+                                });       
+                            });
+
+
+                            $("#btn6").click(function(){
+                                alert("저장 하시겠습니까?");
+                                let text =CKEDITOR.instances.editor1.getData();
+                                let title = $("#usertitle").val();
+                                let tag = $("#usertag").val();
+
+                                writeUserData(title, text, tag);
+                            });
+
+
+                        </script>
+                    </form>
+                    </content>
+                
+            </section>
+
+        </body>
+        </html>
